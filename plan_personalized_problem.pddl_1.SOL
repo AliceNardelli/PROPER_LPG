@@ -1,0 +1,19 @@
+
+; Version LPG-td-1.4
+; Seed 8742189
+; Command line: ./lpg-td -o personalized_domain.pddl -f personalized_problem.pddl -n 1 
+; Problem personalized_problem.pddl
+; Actions having STRIPS duration
+; Time 0.01
+; Search time 0.01
+; Parsing time 0.00
+; Mutex time 0.00
+; MetricValue -4.00
+
+0:   (REACHING_PRODUCTION_LOCATION WL PL) [1]
+1:   (PICK_THE_BLOCK PL) [1]
+2:   (REACHING_HUMAN_LOCATION_NEAR PL HL) [1]
+3:   (DELIVER_THE_BLOCK HL) [1]
+4:   (MOVE_TO_RANDOM_LOCATION HL R3) [1]
+5:   (MOVE_TO_RANDOM_LOCATION R3 R2) [1]
+6:   (GO_WAIT_CROWD_ROOM R2 WL) [1]
