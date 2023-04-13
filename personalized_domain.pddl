@@ -111,6 +111,20 @@
     )
 )
 
+(:action reaching_human_location_near
+    :parameters (?l1 ?l2 - location)
+    :precondition (and 
+    	    (capture_social_attention)
+            (at ?l1)
+            (human_location ?l2)
+            (block_to_deliver)
+            
+    )
+    :effect (and 
+            (not (at ?l1))
+            (at ?l2)
+    )
+)
 
 (:action reaching_human_location_far
     :parameters (?l1 ?l2 - location)
@@ -173,30 +187,4 @@
 )
 
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
