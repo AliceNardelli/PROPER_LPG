@@ -9,9 +9,9 @@
 (:functions
 	(max_no_blocks)
 	(no_blocks)
-	(excited)
-	(verbally_interact)
-        (human_approched)
+	(level_of_interaction)
+        (desire_capture_social_attention)
+        (time)
 )
 
 (:predicates 
@@ -24,69 +24,38 @@
         (block_to_deliver)
         (empty_robot)
         (finished)
-        (extrovert)
-        (desire_capture_social_attention)
-        (captured_social_attention)
 )
 
-
-(:derived (desire_capture_social_attention)
-	(and (extrovert)(human_present))
-)
 
 (:action chit_chat
-    :parameters (?l1 - room)
     :precondition (and 
-            (at ?l1)
-            (production_room ?l1)
-            (presented_task ?l1)
-            (human_present) 
-            (desire_capture_social_attention)
+            (>=(time)1)
     )
     :effect (and
-    	    (increase (verbally_interact)1)
+    	    (increase (level_of_interaction) 2)
+            (increase (time) 1)
     )
 )
 
 (:action express_enthusiasm
-    :parameters (?l1 - room)
     :precondition (and 
-            (at ?l1)
-            (production_room ?l1)
-            (presented_task ?l1)
-            (human_present) 
-            (desire_capture_social_attention)
+            (>=(time)1)
     )
     :effect (and
-    	   (increase (excited) 1)
+    	  (increase (level_of_interaction) 2)
+          (increase (time) 1)
     )
 )
 
 (:action approaching_human
-    :parameters (?l1 - room)
     :precondition (and 
-            (at ?l1)
-            (production_room ?l1)
-            (human_present) 
-            (desire_capture_social_attention)
+            (>=(time)1)
     )
     :effect (and
-    	   (increase (human_approched) 1)
+    	   (increase (level_of_interaction) 2)
+           (increase (time) 1)
     )
 )
-
-(:action goal_extro
-    :parameters ()
-    :precondition (and 
-        (>(excited)1)
-        (>(verbally_interact)1)
-        (>(human_approched)1)
-    )
-    :effect (and
-    	   (captured_social_attention)
-    )
-)
-
 
 
 (:action reaching_production_room
@@ -94,10 +63,13 @@
     :precondition (and 
             (at ?l1)
             (production_room ?l2)
+            (>(level_of_interaction)(desire_capture_social_attention))
     )
     :effect (and 
             (not (at ?l1))
             (at ?l2)
+            (decrease (level_of_interaction) 1)
+            (increase (time) 1)
     )
 )
 
@@ -107,10 +79,13 @@
     :precondition (and 
             (at ?l1)
             (assembly_room ?l2)
+            (>(level_of_interaction)(desire_capture_social_attention))
     )
     :effect (and 
             (not (at ?l1))
             (at ?l2)
+            (decrease (level_of_interaction) 1)
+            (increase (time) 1)
     )
 )
 
@@ -120,9 +95,12 @@
     :precondition (and 
             (at ?l1)
             (assembly_room ?l1)
+            (>(level_of_interaction)(desire_capture_social_attention))
     )
     :effect (and 
             (presented_task ?l1)
+            (decrease (level_of_interaction) 1)
+            (increase (time) 1)
     )
 )
 
@@ -132,9 +110,12 @@
     :precondition (and 
             (at ?l1)
             (production_room ?l1)
+            (>(level_of_interaction)(desire_capture_social_attention))
     )
     :effect (and 
             (presented_task ?l1)
+            (decrease (level_of_interaction) 1)
+            (increase (time) 1)
     )
 )
 
@@ -148,10 +129,13 @@
             (presented_task ?l1)
             (human_present) 
             (empty_robot) 
+            (>(level_of_interaction)(desire_capture_social_attention))
     )
     :effect (and
     	    (not(empty_robot)) 
             (block_to_deliver) 
+            (decrease (level_of_interaction) 1)
+            (increase (time) 1)
     )
 )
 
@@ -164,12 +148,16 @@
             (presented_task ?l1)
             (human_present) 
             (block_to_deliver) 
+            (>(level_of_interaction)(desire_capture_social_attention))
+
              
     )
     :effect (and
     	    (not(block_to_deliver)) 
             (empty_robot)
             (increase (no_blocks) 1)
+            (decrease (level_of_interaction) 1)
+            (increase (time) 1)
     )
 )
 

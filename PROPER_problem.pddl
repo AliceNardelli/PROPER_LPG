@@ -12,17 +12,15 @@
         (=(no_blocks)0)
         (human_present) 
         (empty_robot)
-        (extrovert)
-        (=(excited)0)
-        (=(verbally_interact)0)
-        (=(human_approched)0)      
+        (=(level_of_interaction)6)
+        (=(desire_capture_social_attention)5)   
+        (=(time)1)
 )
 
 
 (:goal  
     (and 
         (finished)
-        (captured_social_attention)
     )
 )
 
