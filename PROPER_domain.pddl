@@ -9,9 +9,18 @@
 (:functions
 	(max_no_blocks)
 	(no_blocks)
+
         (extroversion_coefficient)
         (desired_interaction)
-        (interaction_level)     
+        (interaction_level)
+
+        (conscientious_coefficient)
+        (desired_scrupulousness)
+        (scrupulousness_level)     
+
+        (agreeableness_coefficient)
+        (desired_agreeableness)
+        (agreeableness_level)  
 )
 
 (:predicates 
@@ -25,12 +34,14 @@
         (finished)
         (introvert)
         (extrovert)
+        (conscientous)
+        (unscropolous)
+        (agreeable)
+        (disagreeable)
 
 )
 
 ;extroversion actions
-
-
 (:durative-action chit_chat
         :duration
                 (= ?duration 5)
@@ -103,9 +114,180 @@
 
         :effect
                 (and    
-                     (at end (increase (interaction_level)5))
+                     (at end (increase (interaction_level) 5))
                 )
 )
+;conscientous action
+(:durative-action check_the_human_work
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                     (at start (conscientous))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (scrupulousness_level) 5))
+                )
+)
+
+(:durative-action say_to_pay_attention
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                     (at start (conscientous))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (scrupulousness_level) 5))
+                )
+)
+
+;unscr ac
+(:durative-action wait
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                     (at start (unscropolous))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (scrupulousness_level) 5))
+                )
+)
+
+(:durative-action go_in_a_random_position
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                     (at start (unscropolous))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (scrupulousness_level) 5))
+                )
+)
+
+(:durative-action say_no_matter_about_the_task
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                     (at start (unscropolous))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (scrupulousness_level) 5))
+                )
+)
+
+
+;agreeableness action
+(:durative-action show_empathy
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
+                     (at start (agreeable))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level) 5))
+                )
+)
+
+(:durative-action pleasure_humans
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
+                     (at start (agreeable))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level) 5))
+                )
+)
+
+(:durative-action ask_to_help_the_human
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
+                     (at start (agreeable))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level) 5))
+                )
+)
+
+
+;disagreeable action
+(:durative-action say_the_human_it_work_better
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
+                     (at start (disagreeable))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level) 5))
+                )
+)
+
+(:durative-action try_replace_the_human
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
+                     (at start (disagreeable))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level) 5))
+                )
+)
+
+(:durative-action be_arrogant
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
+                     (at start (disagreeable))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level) 5))
+                )
+)
+
 
 ;standard plan actions
 (:durative-action reaching_production_room
@@ -119,6 +301,8 @@
                         (at start (at ?l1))
                         (at start (production_room ?l2))
                         (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                        (at start (>=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                        (at start (>=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
                 )
 
         :effect
@@ -127,6 +311,8 @@
                         (at end (at ?l2))
 
                         (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (increase (scrupulousness_level)(*(conscientious_coefficient)10)))
+                        (at end (increase (agreeableness_level)(*(agreeableness_coefficient)10)))
                 )
 )
 
@@ -141,11 +327,15 @@
                         (at start (at ?l1))
                         (at start (assembly_room ?l2))
                         (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                        (at start (>=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                        (at start (>=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
                 )
 
         :effect
                 (and
                         (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (increase (scrupulousness_level)(*(conscientious_coefficient)10)))
+                        (at end (increase (agreeableness_level)(*(agreeableness_coefficient)10)))
                         (at end (not (at ?l1)))
                         (at end (at ?l2))
                 )
@@ -162,11 +352,15 @@
                         (at start (at ?l1))
                         (at start (assembly_room ?l1))
                         (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                        (at start (>=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                        (at start (>=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
                 )
 
         :effect
                 (and
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)7)))
+                        (at end (increase (scrupulousness_level)(*(conscientious_coefficient)7)))
+                        (at end (increase (agreeableness_level)(*(agreeableness_coefficient)7)))
                         (at end (presented_task ?l1))
                 )
 )
@@ -184,11 +378,15 @@
                         (at start (at ?l1))
                         (at start (production_room ?l1))
                         (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                        (at start (>=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                        (at start (>=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
                 )
 
         :effect
                 (and
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)7)))
+                        (at end (increase (scrupulousness_level)(*(conscientious_coefficient)7)))
+                        (at end (increase (agreeableness_level)(*(agreeableness_coefficient)7)))
                         (at end (presented_task ?l1))
                 )
 )
@@ -207,10 +405,14 @@
                         (at start(human_present)) 
                         (at start(empty_robot)) 
                         (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                        (at start (>=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                        (at start (>=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
                 )
         :effect
                 (and
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)5)))
+                        (at end (increase (scrupulousness_level)(*(conscientious_coefficient)5)))
+                        (at end (increase (agreeableness_level)(*(agreeableness_coefficient)5)))
                         (at end (not(empty_robot)))
                         (at end (block_to_deliver))
                 )
@@ -232,6 +434,8 @@
                         (at start(block_to_deliver)) 
                         
                         (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                        (at start (>=(*(scrupulousness_level)(scrupulousness_level))(*(desired_scrupulousness)(desired_scrupulousness))))
+                        (at start (>=(*(agreeableness_level)(agreeableness_level))(*(desired_agreeableness)(desired_agreeableness))))
                 )
         :effect
                 (and
@@ -239,7 +443,9 @@
                         (at end (not(block_to_deliver)))
                         (at end (increase (no_blocks) 1))
 
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)5)))
+                        (at end (increase (scrupulousness_level)(*(conscientious_coefficient)5)))
+                        (at end (increase (agreeableness_level)(*(agreeableness_coefficient)5)))
                 )
 )
 
