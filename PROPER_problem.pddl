@@ -12,9 +12,12 @@
         (=(no_blocks)0)
         (human_present) 
         (empty_robot)
-        (=(level_of_interaction)6)
-        (=(desire_capture_social_attention)5)   
-        (=(time)1)
+        ; the desired level of interaction
+        (=(level_of_interaction)4) 
+        ;actual interaction
+        (=(social_attention)6) 
+        ;lower is this value higher is the number of time the robot try to interact  
+        (=(inverse_extroversion_level)0.5)
 )
 
 

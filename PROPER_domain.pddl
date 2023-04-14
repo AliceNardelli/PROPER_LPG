@@ -10,12 +10,12 @@
 	(max_no_blocks)
 	(no_blocks)
 	(level_of_interaction)
-        (desire_capture_social_attention)
-        (time)
+        (social_attention)
+        (inverse_extroversion_level)
+        
 )
 
 (:predicates 
-
         (production_room ?r - room)
         (assembly_room ?r - room)
         (presented_task ?r - room)
@@ -24,36 +24,37 @@
         (block_to_deliver)
         (empty_robot)
         (finished)
+
 )
 
 
 (:action chit_chat
     :precondition (and 
-            (>=(time)1)
+          (<=(social_attention)(level_of_interaction))  
     )
     :effect (and
-    	    (increase (level_of_interaction) 2)
-            (increase (time) 1)
+    	    (increase (social_attention)(inverse_extroversion_level))
+
     )
 )
 
 (:action express_enthusiasm
     :precondition (and 
-            (>=(time)1)
+            (<=(social_attention)(level_of_interaction))
     )
     :effect (and
-    	  (increase (level_of_interaction) 2)
-          (increase (time) 1)
+    	  (increase (social_attention)(inverse_extroversion_level))
+          
     )
 )
 
 (:action approaching_human
     :precondition (and 
-            (>=(time)1)
+          (<=(social_attention)(level_of_interaction))
     )
     :effect (and
-    	   (increase (level_of_interaction) 2)
-           (increase (time) 1)
+    	   (increase (social_attention)(inverse_extroversion_level))
+          
     )
 )
 
@@ -63,13 +64,13 @@
     :precondition (and 
             (at ?l1)
             (production_room ?l2)
-            (>(level_of_interaction)(desire_capture_social_attention))
+            (>=(social_attention)(level_of_interaction))
     )
     :effect (and 
             (not (at ?l1))
             (at ?l2)
-            (decrease (level_of_interaction) 1)
-            (increase (time) 1)
+            (decrease (social_attention) 1)
+           
     )
 )
 
@@ -79,13 +80,13 @@
     :precondition (and 
             (at ?l1)
             (assembly_room ?l2)
-            (>(level_of_interaction)(desire_capture_social_attention))
+            (>=(social_attention)(level_of_interaction))
     )
     :effect (and 
             (not (at ?l1))
             (at ?l2)
-            (decrease (level_of_interaction) 1)
-            (increase (time) 1)
+            (decrease (social_attention) 1)
+            
     )
 )
 
@@ -95,12 +96,12 @@
     :precondition (and 
             (at ?l1)
             (assembly_room ?l1)
-            (>(level_of_interaction)(desire_capture_social_attention))
+            (>=(social_attention)(level_of_interaction))
     )
     :effect (and 
             (presented_task ?l1)
-            (decrease (level_of_interaction) 1)
-            (increase (time) 1)
+            (decrease (social_attention) 1)
+           
     )
 )
 
@@ -110,12 +111,12 @@
     :precondition (and 
             (at ?l1)
             (production_room ?l1)
-            (>(level_of_interaction)(desire_capture_social_attention))
+            (>=(social_attention)(level_of_interaction))
     )
     :effect (and 
             (presented_task ?l1)
-            (decrease (level_of_interaction) 1)
-            (increase (time) 1)
+            (decrease (social_attention) 1)
+           
     )
 )
 
@@ -129,13 +130,13 @@
             (presented_task ?l1)
             (human_present) 
             (empty_robot) 
-            (>(level_of_interaction)(desire_capture_social_attention))
+            (>=(social_attention)(level_of_interaction))
     )
     :effect (and
     	    (not(empty_robot)) 
             (block_to_deliver) 
-            (decrease (level_of_interaction) 1)
-            (increase (time) 1)
+            (decrease (social_attention) 1)
+            
     )
 )
 
@@ -148,7 +149,7 @@
             (presented_task ?l1)
             (human_present) 
             (block_to_deliver) 
-            (>(level_of_interaction)(desire_capture_social_attention))
+            (>=(social_attention)(level_of_interaction))
 
              
     )
@@ -156,8 +157,7 @@
     	    (not(block_to_deliver)) 
             (empty_robot)
             (increase (no_blocks) 1)
-            (decrease (level_of_interaction) 1)
-            (increase (time) 1)
+            (decrease (social_attention) 1)
     )
 )
 
