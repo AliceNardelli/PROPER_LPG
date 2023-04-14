@@ -1,6 +1,6 @@
-(define (domain PROPER_navigation_domain)
+(define (domain PROPER_navigation)
 
-(:requirements :adl :derived-predicates :strips :typing :conditional-effects :negative-preconditions :equality :fluents)
+(:requirements :adl :derived-predicates :strips :typing :conditional-effects :negative-preconditions :equality :fluents :durative-actions  :duration-inequalities :continuous-effects :time)
 
 (:types
 	room
@@ -9,10 +9,9 @@
 (:functions
 	(max_no_blocks)
 	(no_blocks)
-	(level_of_interaction)
-        (social_attention)
-        (inverse_extroversion_level)
-        
+        (extroversion_coefficient)
+        (desired_interaction)
+        (interaction_level)     
 )
 
 (:predicates 
@@ -24,144 +23,225 @@
         (block_to_deliver)
         (empty_robot)
         (finished)
+        (introvert)
+        (extrovert)
 
 )
 
+;extroversion actions
 
-(:action chit_chat
-    :precondition (and 
-          (<=(social_attention)(level_of_interaction))  
-    )
-    :effect (and
-    	    (increase (social_attention)(inverse_extroversion_level))
 
-    )
+(:durative-action chit_chat
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                   (at start (extrovert))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
 )
 
-(:action express_enthusiasm
-    :precondition (and 
-            (<=(social_attention)(level_of_interaction))
-    )
-    :effect (and
-    	  (increase (social_attention)(inverse_extroversion_level))
-          
-    )
+(:durative-action approaching_human
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                        (at start (<=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                        (at start (extrovert))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
 )
 
-(:action approaching_human
-    :precondition (and 
-          (<=(social_attention)(level_of_interaction))
-    )
-    :effect (and
-    	   (increase (social_attention)(inverse_extroversion_level))
-          
-    )
+(:durative-action express_enthusiasm
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                     (at start (extrovert))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
+)
+
+;introvert actions
+(:durative-action turn_on_back
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                     (at start (introvert))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
+)
+
+(:durative-action reach_a_not_crowded_area
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                     (at start (<=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                     (at start (introvert))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
+)
+
+;standard plan actions
+(:durative-action reaching_production_room
+        :parameters
+                 (?l1 ?l2 - room)
+        :duration
+                (= ?duration 10)
+
+        :condition
+                (and
+                        (at start (at ?l1))
+                        (at start (production_room ?l2))
+                        (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                )
+
+        :effect
+                (and    
+                        (at end (not (at ?l1)))
+                        (at end (at ?l2))
+
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                )
+)
+
+(:durative-action reaching_assembly_room
+        :parameters
+                 (?l1 ?l2 - room)
+        :duration
+                (= ?duration 10)
+
+        :condition
+                (and
+                        (at start (at ?l1))
+                        (at start (assembly_room ?l2))
+                        (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                )
+
+        :effect
+                (and
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (not (at ?l1)))
+                        (at end (at ?l2))
+                )
+)
+
+(:durative-action present_assembly_room
+        :parameters
+                 (?l1  - room)
+        :duration
+                (= ?duration 7)
+
+        :condition
+                (and
+                        (at start (at ?l1))
+                        (at start (assembly_room ?l1))
+                        (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                )
+
+        :effect
+                (and
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (presented_task ?l1))
+                )
 )
 
 
-(:action reaching_production_room
-    :parameters (?l1 ?l2 - room)
-    :precondition (and 
-            (at ?l1)
-            (production_room ?l2)
-            (>=(social_attention)(level_of_interaction))
-    )
-    :effect (and 
-            (not (at ?l1))
-            (at ?l2)
-            (decrease (social_attention) 1)
-           
-    )
+
+(:durative-action present_production_room
+        :parameters
+                 (?l1  - room)
+        :duration
+                (= ?duration 7)
+
+        :condition
+                (and
+                        (at start (at ?l1))
+                        (at start (production_room ?l1))
+                        (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                )
+
+        :effect
+                (and
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (presented_task ?l1))
+                )
+)
+
+(:durative-action ask_pick_the_block
+        :parameters
+                 (?l1  - room)
+        :duration
+                (= ?duration 5)
+
+        :condition
+               (and 
+                        (at start (at ?l1))
+                        (at start(production_room ?l1))
+                        (at start(presented_task ?l1))
+                        (at start(human_present)) 
+                        (at start(empty_robot)) 
+                        (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                )
+        :effect
+                (and
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                        (at end (not(empty_robot)))
+                        (at end (block_to_deliver))
+                )
 )
 
 
-(:action reaching_assembly_room
-    :parameters (?l1 ?l2 - room)
-    :precondition (and 
-            (at ?l1)
-            (assembly_room ?l2)
-            (>=(social_attention)(level_of_interaction))
-    )
-    :effect (and 
-            (not (at ?l1))
-            (at ?l2)
-            (decrease (social_attention) 1)
-            
-    )
+(:durative-action ask_assembly_block
+        :parameters
+                 (?l1  - room)
+        :duration
+                (= ?duration 5)
+
+        :condition
+               (and 
+                        (at start (at ?l1))
+                        (at start(assembly_room ?l1))
+                        (at start(presented_task ?l1))
+                        (at start(human_present)) 
+                        (at start(block_to_deliver)) 
+                        
+                        (at start (>=(*(interaction_level)(interaction_level))(*(desired_interaction)(desired_interaction))))
+                )
+        :effect
+                (and
+                        (at end (empty_robot))
+                        (at end (not(block_to_deliver)))
+                        (at end (increase (no_blocks) 1))
+
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
+                )
 )
-
-
-(:action present_assembly_room
-    :parameters (?l1 - room)
-    :precondition (and 
-            (at ?l1)
-            (assembly_room ?l1)
-            (>=(social_attention)(level_of_interaction))
-    )
-    :effect (and 
-            (presented_task ?l1)
-            (decrease (social_attention) 1)
-           
-    )
-)
-
-
-(:action present_production_room
-    :parameters (?l1 - room)
-    :precondition (and 
-            (at ?l1)
-            (production_room ?l1)
-            (>=(social_attention)(level_of_interaction))
-    )
-    :effect (and 
-            (presented_task ?l1)
-            (decrease (social_attention) 1)
-           
-    )
-)
-
-
-
-(:action ask_pick_the_block
-    :parameters (?l1 - room)
-    :precondition (and 
-            (at ?l1)
-            (production_room ?l1)
-            (presented_task ?l1)
-            (human_present) 
-            (empty_robot) 
-            (>=(social_attention)(level_of_interaction))
-    )
-    :effect (and
-    	    (not(empty_robot)) 
-            (block_to_deliver) 
-            (decrease (social_attention) 1)
-            
-    )
-)
-
-
-(:action ask_assembly_block
-    :parameters (?l1 - room)
-    :precondition (and 
-            (at ?l1)
-            (assembly_room ?l1)
-            (presented_task ?l1)
-            (human_present) 
-            (block_to_deliver) 
-            (>=(social_attention)(level_of_interaction))
-
-             
-    )
-    :effect (and
-    	    (not(block_to_deliver)) 
-            (empty_robot)
-            (increase (no_blocks) 1)
-            (decrease (social_attention) 1)
-    )
-)
-
-
 
 (:action check_finished
     :parameters (?l1 - room)
@@ -174,5 +254,4 @@
     	    (finished)
     )
 )
-
 )

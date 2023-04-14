@@ -1,4 +1,4 @@
-(define (problem p) (:domain PROPER_navigation_domain)
+(define (problem p) (:domain PROPER_navigation)
 (:objects
 	r1 - room
 	r2 - room
@@ -12,21 +12,17 @@
         (=(no_blocks)0)
         (human_present) 
         (empty_robot)
-        ; the desired level of interaction
-        (=(level_of_interaction)4) 
-        ;actual interaction
-        (=(social_attention)6) 
-        ;lower is this value higher is the number of time the robot try to interact  
-        (=(inverse_extroversion_level)0.5)
+
+        (= (extroversion_coefficient) -0.1)
+        (= (desired_interaction) 5)
+        (= (interaction_level) 7)
+        (introvert)
 )
-
-
 (:goal  
     (and 
-        (finished)
+       (finished)
     )
 )
-
 ;un-comment the following line if metric is needed
 ;(:metric minimize (???))
 )
