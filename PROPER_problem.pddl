@@ -13,9 +13,9 @@
         (human_present) 
         (empty_robot)
 
-        (= (extroversion_coefficient) 0)
-        (= (desired_interaction) 0)
-        (= (interaction_level) 0)
+        (= (extroversion_coefficient) -0.4)
+        (= (desired_interaction) 5)
+        (= (interaction_level) 7)
         (extrovert)
 
 
@@ -25,19 +25,19 @@
         (unscropolous)
 
 
-        (=(agreeableness_coefficient)-0.35)
+        (=(agreeableness_coefficient)-0.3)
         (=(desired_agreeableness)5)
         (=(agreeableness_level)7)
         (disagreeable)
         
 )
+
 (:goal  
     (and 
        (finished)
     )
 )
-;un-comment the following line if metric is needed
-;(:metric minimize (???))
+
 )
 
 
