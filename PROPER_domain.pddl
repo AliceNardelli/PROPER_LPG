@@ -42,7 +42,7 @@
 )
 
 ;extroversion actions
-(:durative-action chit_chat
+(:durative-action CHIT_CHAT
         :duration
                 (= ?duration 5)
         :condition
@@ -57,7 +57,7 @@
                 )
 )
 
-(:durative-action approaching_human
+(:durative-action APPROACHING_HUMAN
         :duration
                 (= ?duration 5)
         :condition
@@ -72,7 +72,7 @@
                 )
 )
 
-(:durative-action express_enthusiasm
+(:durative-action EXPRESS_ENTHUSIASM
         :duration
                 (= ?duration 5)
         :condition
@@ -88,7 +88,7 @@
 )
 
 ;introvert actions
-(:durative-action turn_on_back
+(:durative-action TURN_ON_BACK
         :duration
                 (= ?duration 5)
         :condition
@@ -103,7 +103,7 @@
                 )
 )
 
-(:durative-action reach_a_not_crowded_area
+(:durative-action REACH_A_NOT_CROWDED_AREA
         :duration
                 (= ?duration 5)
         :condition
@@ -118,7 +118,7 @@
                 )
 )
 ;conscientous action
-(:durative-action check_the_human_work
+(:durative-action CHECK_THE_HUMAN_WORK
         :duration
                 (= ?duration 5)
         :condition
@@ -133,7 +133,7 @@
                 )
 )
 
-(:durative-action say_to_pay_attention
+(:durative-action SAY_TO_PAY_ATTENTION
         :duration
                 (= ?duration 5)
         :condition
@@ -149,7 +149,7 @@
 )
 
 ;unscr ac
-(:durative-action wait
+(:durative-action WAIT
         :duration
                 (= ?duration 5)
         :condition
@@ -164,7 +164,7 @@
                 )
 )
 
-(:durative-action go_in_a_random_position
+(:durative-action GO_RANDOM
         :duration
                 (= ?duration 5)
         :condition
@@ -179,7 +179,7 @@
                 )
 )
 
-(:durative-action say_no_matter_about_the_task
+(:durative-action SAY_CONFUSING
         :duration
                 (= ?duration 5)
         :condition
@@ -196,7 +196,7 @@
 
 
 ;agreeableness action
-(:durative-action show_empathy
+(:durative-action SHOW_EMPATHY
         :duration
                 (= ?duration 5)
         :condition
@@ -211,7 +211,7 @@
                 )
 )
 
-(:durative-action pleasure_humans
+(:durative-action PLEASURE_HUMANS
         :duration
                 (= ?duration 5)
         :condition
@@ -226,7 +226,7 @@
                 )
 )
 
-(:durative-action ask_to_help_the_human
+(:durative-action ASK_IF_NEED_HELP
         :duration
                 (= ?duration 5)
         :condition
@@ -243,7 +243,7 @@
 
 
 ;disagreeable action
-(:durative-action say_the_human_it_work_better
+(:durative-action SAY_ROBOT_WORK_BETTER
         :duration
                 (= ?duration 5)
         :condition
@@ -258,7 +258,7 @@
                 )
 )
 
-(:durative-action try_replace_the_human
+(:durative-action TRY_REPLACE_THE_HUMAN
         :duration
                 (= ?duration 5)
         :condition
@@ -273,7 +273,7 @@
                 )
 )
 
-(:durative-action be_arrogant
+(:durative-action BE_ARROGANT
         :duration
                 (= ?duration 5)
         :condition
@@ -290,7 +290,7 @@
 
 
 ;standard plan actions
-(:durative-action reaching_production_room
+(:durative-action REACHING_PRODUCTION_ROOM
         :parameters
                  (?l1 ?l2 - room)
         :duration
@@ -316,7 +316,7 @@
                 )
 )
 
-(:durative-action reaching_assembly_room
+(:durative-action REACHING_ASSEMBLY_ROOM
         :parameters
                  (?l1 ?l2 - room)
         :duration
@@ -341,7 +341,7 @@
                 )
 )
 
-(:durative-action present_assembly_room
+(:durative-action PRESENT_ASSEMBLY_ROOM
         :parameters
                  (?l1  - room)
         :duration
@@ -367,7 +367,7 @@
 
 
 
-(:durative-action present_production_room
+(:durative-action PRESENT_PRODUCTION_ROOM
         :parameters
                  (?l1  - room)
         :duration
@@ -391,7 +391,7 @@
                 )
 )
 
-(:durative-action ask_pick_the_block
+(:durative-action ASK_PICK_THE_BLOCK
         :parameters
                  (?l1  - room)
         :duration
@@ -419,7 +419,7 @@
 )
 
 
-(:durative-action ask_assembly_block
+(:durative-action ASK_ASSEMBLY_BLOCK
         :parameters
                  (?l1  - room)
         :duration
@@ -442,14 +442,13 @@
                         (at end (empty_robot))
                         (at end (not(block_to_deliver)))
                         (at end (increase (no_blocks) 1))
-
                         (at end (increase (interaction_level)(*(extroversion_coefficient)5)))
                         (at end (increase (scrupulousness_level)(*(conscientious_coefficient)5)))
                         (at end (increase (agreeableness_level)(*(agreeableness_coefficient)5)))
                 )
 )
 
-(:action check_finished
+(:action CHECK_FINISHED
     :parameters (?l1 - room)
     :precondition (and 
             (at ?l1)
