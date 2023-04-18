@@ -26,6 +26,7 @@
         (finished)
         (extro)
         (intro)
+        (computed_e)
 
 )
 
@@ -53,7 +54,7 @@
                 )
 )
 
-(:durative-action EXTRO_ACTION
+(:durative-action CHIT_CHAT
         :duration
                 (= ?duration 5)
         :condition
@@ -68,7 +69,52 @@
                 )
 )
 
-(:durative-action INTRO_ACTION
+(:durative-action APPROACH_HUMAN
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<=(interaction_level)(desired_interaction)))
+                   (at start (extro))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
+)
+
+(:durative-action EXPRESS_ENTHUSIASM
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<=(interaction_level)(desired_interaction)))
+                   (at start (extro))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
+)
+
+(:durative-action GO_NOT_CROWDED_AREA
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>=(interaction_level)(desired_interaction)))
+                   (at start (intro))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (interaction_level) 5))
+                )
+)
+
+(:durative-action TURN_ON_BACK
         :duration
                 (= ?duration 5)
         :condition
@@ -94,13 +140,14 @@
                         (at start (at ?l1))
                         (at start (production_room ?l2))
                         (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
+                        (at start (computed_e))
                 )
 
         :effect
                 (and    
+                        (at end (not (computed_e)))
                         (at end (not (at ?l1)))
                         (at end (at ?l2))
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
                 )
 )
 
@@ -113,7 +160,7 @@
 
         :condition
                 (and
-                       
+                        (at start (computed_e))
                         (at start (at ?l1))
                         (at start (assembly_room ?l2))
                         (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
@@ -121,9 +168,9 @@
 
         :effect
                 (and
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
                         (at end (not (at ?l1)))
                         (at end (at ?l2))
+                        (at end (not (computed_e)))
                 )
 )
 
@@ -135,7 +182,7 @@
 
         :condition
                 (and
-                        
+                        (at start (computed_e))
                         (at start (at ?l1))
                         (at start (assembly_room ?l1))
                         (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
@@ -143,8 +190,8 @@
 
         :effect
                 (and
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)7)))
                         (at end (presented_task ?l1))
+                        (at end (not (computed_e)))
                 )
 )
 
@@ -158,7 +205,7 @@
 
         :condition
                 (and
-                      
+                        (at start (computed_e))
                         (at start (at ?l1))
                         (at start (production_room ?l1))
                         (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
@@ -166,8 +213,8 @@
 
         :effect
                 (and
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)7)))
                         (at end (presented_task ?l1))
+                        (at end (not (computed_e)))
                 )
 )
 
@@ -179,6 +226,7 @@
 
         :condition
                (and 
+                        (at start (computed_e))
                         (at start (at ?l1))
                         (at start(production_room ?l1))
                         (at start(presented_task ?l1))
@@ -188,9 +236,9 @@
                 )
         :effect
                 (and
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)5)))
                         (at end (not(empty_robot)))
                         (at end (block_to_deliver))
+                        (at end (not (computed_e)))
                 )
 )
 
@@ -203,6 +251,7 @@
 
         :condition
                (and 
+                        (at start (computed_e))
                         (at start (at ?l1))
                         (at start(assembly_room ?l1))
                         (at start(presented_task ?l1))
@@ -212,12 +261,37 @@
                 )
         :effect
                 (and
+                        (at end (not (computed_e)))
                         (at end (empty_robot))
                         (at end (not(block_to_deliver)))
                         (at end (increase (no_blocks) 1))
-                        (at end (increase (interaction_level)(*(extroversion_coefficient)5)))
                 )
 )
+
+
+
+(:action COMPUTE_METRIC_MINUS
+    :precondition (and 
+         (not (computed_e))  
+         (intro) 
+    )
+    :effect (and
+    	   (computed_e)
+           (increase (interaction_level)(*(extroversion_coefficient)5))
+           )
+)
+
+(:action COMPUTE_METRIC_PLUS
+    :precondition (and 
+         (not (computed_e))  
+         (extro) 
+    )
+    :effect (and
+    	    (computed_e)
+           (decrease (interaction_level)(*(extroversion_coefficient)5))
+           )
+)
+
 
 (:action CHECK_FINISHED
     :parameters (?l1 - room)

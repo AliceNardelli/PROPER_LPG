@@ -13,9 +13,10 @@
         (human_present) 
         (empty_robot)
         (=(baseline)10)
-        (= (extroversion_coefficient) 0.05)
+        (= (extroversion_coefficient) 0.2)
         (= (desired_interaction) 5)
-        (= (interaction_level) 3)          
+        (= (interaction_level) 3)  
+        (computed_e)        
 )
 
 (:goal  
