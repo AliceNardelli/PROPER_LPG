@@ -16,9 +16,9 @@
         (=(dur)0)
 
 
-        (= (extroversion_coefficient) 0.0)
-        (= (desired_interaction) 10)
-        (= (interaction_level) 10)  
+        (= (extroversion_coefficient) 0.2)
+        (= (desired_interaction) 15)
+        (= (interaction_level) 17)  
         (computed_e)  
 
         (=(conscientious_coefficient)0.2)
@@ -26,9 +26,9 @@
         (=(scrupulousness_level)17)
         (computed_c)  
 
-        (=(agreeableness_coefficient)0.5)
-        (=(desired_agreeableness)15)
-        (=(agreeableness_level)17)
+        (=(agreeableness_coefficient)0.1)
+        (=(desired_agreeableness)5)
+        (=(agreeableness_level)3)
         (computed_a)    
 )
 

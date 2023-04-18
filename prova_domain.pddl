@@ -421,7 +421,7 @@
                         (at start (or (and (<=(scrupulousness_level)(desired_scrupulousness)) (unsc))(and (>=(scrupulousness_level)(desired_scrupulousness)) (consc))))
                         (at start (or (and (<=(agreeableness_level)(desired_agreeableness)) (disagree))(and (>=(agreeableness_level)(desired_agreeableness)) (agree))))
                         (at start (computed_c))
-                         (at start (computed_a))
+                        (at start (computed_a))
                 )
 
         :effect
@@ -445,7 +445,7 @@
                 (and
                         (at start (computed_e))
                         (at start (computed_c))
-                         (at start (computed_a))
+                        (at start (computed_a))
                         (at start (at ?l1))
                         (at start (assembly_room ?l1))
                         (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
