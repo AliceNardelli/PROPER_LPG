@@ -1,5 +1,4 @@
-(define (problem nav_problem) (:domain navigation)
-
+(define (problem p) (:domain PROPER_navigation)
 (:objects
 	r1 - room
 	r2 - room
@@ -13,13 +12,12 @@
         (=(no_blocks)0)
         (human_present) 
         (empty_robot)
-        
-
-        (= (extroversion_coefficient) 0.3)
+        (=(baseline)10)
+        (= (extroversion_coefficient) 0.05)
         (= (desired_interaction) 5)
-        (= (interaction_level) 7)
-        
+        (= (interaction_level) 3)          
 )
+
 (:goal  
     (and 
        (finished)
@@ -27,3 +25,5 @@
 )
 
 )
+
+

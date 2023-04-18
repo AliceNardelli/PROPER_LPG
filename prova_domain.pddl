@@ -1,6 +1,6 @@
-(define (domain try_navigation)
+(define (domain PROPER_navigation)
 
-(:requirements :derived-predicates :strips :typing :conditional-effects :negative-preconditions :equality :fluents :durative-actions  :duration-inequalities :continuous-effects :time :adl)
+(:requirements :adl :derived-predicates :strips :typing :conditional-effects :negative-preconditions :equality :fluents :durative-actions  :duration-inequalities :continuous-effects :time)
 
 (:types
 	room
@@ -9,10 +9,10 @@
 (:functions
 	(max_no_blocks)
 	(no_blocks)
-        (dur)
         (extroversion_coefficient)
         (desired_interaction)
-        (interaction_level) 
+        (interaction_level)
+        (baseline)
 )
 
 (:predicates 
@@ -24,36 +24,57 @@
         (block_to_deliver)
         (empty_robot)
         (finished)
-        (to_compute)
-        (computed)
+        (extro)
+        (intro)
+
 )
 
-;extroversion actions
-(:durative-action extro
+(:action CHECK_EXTROVERSION
+        :precondition
+                (and
+                  (>=(desired_interaction)(baseline)) 
+                )
+
+        :effect
+                (and   
+                     (extro)
+                )
+)
+
+(:action CHECK_INTROVERSION
+        :precondition
+                (and
+                  (<=(desired_interaction)(baseline)) 
+                )
+
+        :effect
+                (and   
+                     (intro)
+                )
+)
+
+(:durative-action EXTRO_ACTION
         :duration
                 (= ?duration 5)
         :condition
                 (and
-                     (at start (<=(interaction_level)(desired_interaction)))
-                     (at start (>(desired_interaction)0))
+                   (at start (<=(interaction_level)(desired_interaction)))
+                   (at start (extro))
                 )
 
         :effect
                 (and    
-                     (at end (increase (interaction_level) 5))
+                     (at end (increase (interaction_level)5))
                 )
 )
 
-
-
-;introvert actions
-(:durative-action intro
+(:durative-action INTRO_ACTION
         :duration
                 (= ?duration 5)
         :condition
                 (and
-                     (at start (>(interaction_level)(desired_interaction)))
-                     (at start (<(desired_interaction)0))
+                   (at start (>=(interaction_level)(desired_interaction)))
+                   (at start (intro))
                 )
 
         :effect
@@ -62,10 +83,7 @@
                 )
 )
 
-
-
-;standard plan actions
-(:durative-action reaching_production_room
+(:durative-action REACHING_PRODUCTION_ROOM
         :parameters
                  (?l1 ?l2 - room)
         :duration
@@ -73,24 +91,21 @@
 
         :condition
                 (and
-                        (at start (computed))
                         (at start (at ?l1))
                         (at start (production_room ?l2))
-                        (at start (>=(interaction_level)(desired_interaction)))
-
+                        (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
                 )
 
         :effect
                 (and    
                         (at end (not (at ?l1)))
                         (at end (at ?l2))
-                        (at end (assign(dur)10))
-                        (at end (not(computed)))
-                        (at end (to_compute))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
                 )
 )
 
-(:durative-action reaching_assembly_room
+
+(:durative-action REACHING_ASSEMBLY_ROOM
         :parameters
                  (?l1 ?l2 - room)
         :duration
@@ -98,23 +113,21 @@
 
         :condition
                 (and
-                        (at start (computed))
+                       
                         (at start (at ?l1))
                         (at start (assembly_room ?l2))
-                        (at start (>=(interaction_level)(desired_interaction)))
+                        (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
                 )
 
         :effect
                 (and
-                        (at end (to_compute))
-                        (at end (assign(dur)10))
-                        (at end (not(computed)))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)10)))
                         (at end (not (at ?l1)))
                         (at end (at ?l2))
                 )
 )
 
-(:durative-action present_assembly_room
+(:durative-action PRESENT_ASSEMBLY_ROOM
         :parameters
                  (?l1  - room)
         :duration
@@ -122,24 +135,22 @@
 
         :condition
                 (and
-                        (at start (computed))
+                        
                         (at start (at ?l1))
                         (at start (assembly_room ?l1))
-                        (at start (>=(interaction_level)(desired_interaction)))
+                        (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
                 )
 
         :effect
                 (and
-                        (at end (to_compute))
-                        (at end (assign(dur)7))
-                        (at end (not(computed)))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)7)))
                         (at end (presented_task ?l1))
                 )
 )
 
 
 
-(:durative-action present_production_room
+(:durative-action PRESENT_PRODUCTION_ROOM
         :parameters
                  (?l1  - room)
         :duration
@@ -147,22 +158,20 @@
 
         :condition
                 (and
-                        (at start (computed))
+                      
                         (at start (at ?l1))
                         (at start (production_room ?l1))
-                        (at start (>=(interaction_level)(desired_interaction)))
+                        (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
                 )
 
         :effect
                 (and
-                        (at end (to_compute))
-                        (at end (assign(dur)7))
-                        (at end (not(computed)))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)7)))
                         (at end (presented_task ?l1))
                 )
 )
 
-(:durative-action ask_pick_the_block
+(:durative-action ASK_PICK_THE_BLOCK
         :parameters
                  (?l1  - room)
         :duration
@@ -170,26 +179,23 @@
 
         :condition
                (and 
-                        (at start (computed))
                         (at start (at ?l1))
                         (at start(production_room ?l1))
                         (at start(presented_task ?l1))
                         (at start(human_present)) 
                         (at start(empty_robot)) 
-                        (at start (>=(interaction_level)(desired_interaction)))
+                        (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
                 )
         :effect
                 (and
-                        (at end (to_compute))
-                        (at end (assign(dur)5))
-                        (at end (not(computed)))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)5)))
                         (at end (not(empty_robot)))
                         (at end (block_to_deliver))
                 )
 )
 
 
-(:durative-action ask_assembly_block
+(:durative-action ASK_ASSEMBLY_BLOCK
         :parameters
                  (?l1  - room)
         :duration
@@ -197,54 +203,23 @@
 
         :condition
                (and 
-                        (at start (computed))
                         (at start (at ?l1))
                         (at start(assembly_room ?l1))
                         (at start(presented_task ?l1))
                         (at start(human_present)) 
                         (at start(block_to_deliver)) 
-                        (at start (>=(interaction_level)(desired_interaction)))
-
+                        (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
                 )
         :effect
                 (and
                         (at end (empty_robot))
                         (at end (not(block_to_deliver)))
                         (at end (increase (no_blocks) 1))
-                        (at end (to_compute))
-                        (at end (not(computed)))
-                        (at end (assign(dur)5))
+                        (at end (increase (interaction_level)(*(extroversion_coefficient)5)))
                 )
 )
 
-(:action compute_metric_sum
-:precondition (and
-        (>(desired_interaction)0)
-        (to_compute)
-)
-:effect (and 
-        (computed)
-        (decrease (interaction_level)(*(extroversion_coefficient)(dur)))
-        (not(to_compute))
-)
-)
-
-
-(:action compute_metric_diff
-:precondition (and
-        (<(desired_interaction)0)
-        (to_compute)
-)
-:effect (and 
-        (computed)
-        (increase (interaction_level)(*(extroversion_coefficient)(dur)))
-        (not(to_compute))
-)
-)
-
-
-
-(:action check_finished
+(:action CHECK_FINISHED
     :parameters (?l1 - room)
     :precondition (and 
             (at ?l1)
