@@ -10,19 +10,15 @@
 	(max_no_blocks)
 	(no_blocks)
         (dur)
-
         (extroversion_coefficient)
         (desired_interaction)
         (interaction_level)
-
         (conscientious_coefficient)
         (desired_scrupulousness)
         (scrupulousness_level) 
-
         (agreeableness_coefficient)
         (desired_agreeableness)
         (agreeableness_level)  
-
         (baseline)
 )
 
@@ -35,19 +31,15 @@
         (block_to_deliver)
         (empty_robot)
         (finished)
-
         (extro)
         (intro)
         (computed_e)
-
         (consc)
         (unsc)
         (computed_c)
-
         (agree)
         (disagree)
         (computed_a)
-
 )
 
 (:action CHECK_EXTROVERSION
@@ -398,7 +390,7 @@
                 (and    
                         (at end (not (computed_e)))
                         (at end (not (computed_c)))
-                         (at end (not (computed_a)))
+                        (at end (not (computed_a)))
                         (at end (not (at ?l1)))
                         (at end (at ?l2))
                         (at end (assign (dur) 10))
@@ -430,7 +422,7 @@
                         (at end (at ?l2))
                         (at end (not (computed_e)))
                         (at end (not (computed_c)))
-                         (at end (not (computed_a)))
+                        (at end (not (computed_a)))
                         (at end (assign (dur) 10))
                 )
 )
@@ -458,7 +450,7 @@
                         (at end (presented_task ?l1))
                         (at end (not (computed_e)))
                         (at end (not (computed_c)))
-                         (at end (not (computed_a)))
+                        (at end (not (computed_a)))
                         (at end (assign (dur) 7))
                 )
 )
@@ -519,7 +511,7 @@
                         (at end (block_to_deliver))
                         (at end (not (computed_e)))
                         (at end (not (computed_c)))
-                         (at end (not (computed_a)))
+                        (at end (not (computed_a)))
                         (at end (assign (dur) 5))
                 )
 )
@@ -575,10 +567,11 @@
          (not (computed_e))  
          (extro) 
     )
-    :effect (and
+    :effect 
+    (and
     	    (computed_e)
            (decrease (interaction_level)(*(extroversion_coefficient)(dur)))
-           )
+    )
 )
 
 (:action COMPUTE_METRIC_UNSC
@@ -586,7 +579,8 @@
          (not (computed_c))  
          (unsc) 
     )
-    :effect (and
+    :effect 
+           (and
     	   (computed_c)
            (increase (scrupulousness_level)(*(conscientious_coefficient)(dur)))
            )
@@ -597,7 +591,8 @@
         (not (computed_c))  
         (consc) 
     )
-    :effect (and
+    :effect 
+        (and
     	(computed_c)
         (decrease (scrupulousness_level)(*(conscientious_coefficient)(dur)))
         )
@@ -609,7 +604,8 @@
          (not (computed_a))  
          (disagree)
     )
-    :effect (and
+    :effect 
+          (and
     	   (computed_a)
            (increase (agreeableness_level)(*(agreeableness_coefficient)(dur)))
            )
@@ -620,7 +616,8 @@
         (not (computed_a))  
         (agree)
     )
-    :effect (and
+    :effect 
+       (and
     	(computed_a)
         (decrease (agreeableness_level)(*(agreeableness_coefficient)(dur)))
         )
@@ -633,7 +630,8 @@
             (assembly_room ?l1)
             (>(no_blocks)(max_no_blocks))
     )
-    :effect (and
+    :effect 
+      (and
     	    (finished)
     )
 )
