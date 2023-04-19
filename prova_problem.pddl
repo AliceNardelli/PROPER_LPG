@@ -14,18 +14,14 @@
         (empty_robot)
         (=(baseline)10)
         (=(dur)0)
-
-
         (= (extroversion_coefficient) 0.2)
         (= (desired_interaction) 15)
         (= (interaction_level) 17)  
         (computed_e)  
-
         (=(conscientious_coefficient)0.2)
         (=(desired_scrupulousness)15)
         (=(scrupulousness_level)17)
         (computed_c)  
-
         (=(agreeableness_coefficient)0.1)
         (=(desired_agreeableness)5)
         (=(agreeableness_level)3)
