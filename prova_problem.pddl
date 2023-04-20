@@ -3,7 +3,6 @@
 	r1 - room
 	r2 - room
 )
-
 (:init
         (assembly_room r1)
         (production_room r2)
@@ -27,7 +26,6 @@
         (=(agreeableness_level)3)
         (computed_a)    
 )
-
 (:goal  
     (and 
        (finished)
