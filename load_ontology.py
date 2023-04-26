@@ -3,7 +3,7 @@ from owlready2 import *
 #load the ontology
 #define properties
 onto_path.append("/home/alice/")
-onto = get_ontology("http://www.semanticweb.org/alice/ontologies/2023/3/new_onto#").load()          
+onto = get_ontology("http://www.semanticweb.org/alice/ontologies/2023/3/onto_new#").load()          
 with onto:
     class Predicates(Thing):
         pass
@@ -75,15 +75,22 @@ with onto:
     class has_value(DataProperty, FunctionalProperty): #functional means that each one has a single value
         domain =[Functions]
         range = [float]
+
     class is_grounded(DataProperty, FunctionalProperty): #functional means that each one has a single value
         domain =[Predicates]
         range = [bool]
+
     class has_operator(DataProperty): #is not a functional, each predicate can have more than one operator
         #domain =[Predicates]
         range = [str]
+
     class has_order(DataProperty, FunctionalProperty): 
         domain =[Parameters]
         range = [int]    
+
+    class has_single_object(DataProperty, FunctionalProperty): 
+        domain =[Predicates]
+        range = [bool]
 
 #define global variables
 actions=[]
@@ -145,6 +152,8 @@ def populate_ontology(domain):
     
     for t in predicates:
         predicates_objects[t]=Predicates(t)
+
+
     #FUNCTIONS
     t=False
     for p in raw_domain:
@@ -241,6 +250,12 @@ def populate_ontology(domain):
 def initialize_functions_predicates():
     for p in predicates:
         predicates_objects[p].is_grounded=False
+        predicates_objects[p].has_object=[]
+        if p=="at":
+            predicates_objects[p].has_single_object=True
+        else:
+            predicates_objects[p].has_single_object=False
+
     for f in functions:
         function_objects[f].has_value=0
 
@@ -289,6 +304,8 @@ def read_the_problem(problem_path):
                         if len(prec)==2:
                             oj=prec[1]
                             predicates_objects[pp].has_object=[objects_objects[oj]]
+                            if pp=='at':
+                                 objects_objects[oj].is_at=True  
     
             if (":init" in p):
                 t=True
@@ -301,8 +318,12 @@ def planning(command,domain_path):
     os.chdir (domain_path)
     #run the planner
     fd_process = subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
-    (out, err) = fd_process.communicate()
-    fd_exit = fd_process.returncode
+    try:
+        (out, err) = fd_process.communicate()
+        fd_exit = fd_process.returncode
+    except:
+        print("exrrorrr")
+    
     
 def read_plan(output_path):
     if os.path.isfile(output_path):
@@ -353,12 +374,19 @@ def update_ontology(a):
                     p.is_grounded=True
                 
                 if len(o)>2 and p.is_grounded==True:
-                   print(p,[params[parameters_objects[o[2]].has_order-1].lower()])
-                   #if parameters_objects[o[2]].has_params_types==objects_objects[params[parameters_objects[o[2]].has_order-1].lower()].has_type: #write the type of a èaram only when the predicate is set to true
-                   p.has_object.append(objects_objects[params[parameters_objects[o[2]].has_order-1].lower()])
+                    if p.has_single_object==True:
+                        p.has_object=[objects_objects[params[parameters_objects[o[2]].has_order-1].lower()]]
+                    else:
+                        #print(p,p.has_object)
+                        if objects_objects[params[parameters_objects[o[2]].has_order-1].lower()] not in p.has_object:
+                            p.has_object.append(objects_objects[params[parameters_objects[o[2]].has_order-1].lower()])
+                   
+
+                
 
 
     funcs=actions_objects[ac].has_effect_function
+    print(funcs)
     if funcs!=[]:
         for f in funcs:
             ops=f.has_operator
@@ -372,6 +400,8 @@ def update_ontology(a):
                     except:
                         break
                 if o[0]==ac:
+                    print(o)
+                    print(f,ac,f.has_value)
                     if o[1]=="assign":
                        f.has_value=int(o[3])
                     elif o[1]=="increase":
@@ -392,11 +422,11 @@ def update_ontology(a):
                             f.has_value=actual_value - int(o[3])
                     else:
                         print("NO OPERATION FOUND")
+                    print(f,ac,f.has_value)
 
-
-def update_problem(file1,file2):
-    if os.path.isfile(domain_path+file1):
-        output_path=domain_path+file1
+def update_problem(plan_path):
+    if os.path.isfile(plan_path):
+        output_path=plan_path
         with open(output_path, "r") as domain_file:
             raw_problem_copy= domain_file.readlines()
     c=0
@@ -421,12 +451,16 @@ def update_problem(file1,file2):
     for i in Predicates.instances():
         key = list(filter(lambda x: predicates_objects[x] == i, predicates_objects))[0]
         if i.is_grounded==True:
-            new_line="      (" +key
-            if i.has_object!=[]:
-                key_obj = list(filter(lambda x: objects_objects[x] == i.has_object[0], objects_objects))[0]
-                new_line=new_line+ " "+key_obj
-            new_line=new_line+")\n"
-            init_file.append(new_line)
+                if i.has_object!=[]:
+                    #print(i.has_object,i)
+                    for j in i.has_object:
+                        #print("there",j,i)
+                        key_obj = list(filter(lambda x: objects_objects[x] == j, objects_objects))[0]
+                        new_line="      (" +key+ " "+key_obj+")\n"
+                        init_file.append(new_line)
+                else:
+                    new_line="      (" +key+")\n"
+                    init_file.append(new_line)
 
     for i in Functions.instances():
         key = list(filter(lambda x: function_objects[x] == i, function_objects))[0]
@@ -434,9 +468,10 @@ def update_problem(file1,file2):
         init_file.append(new_line)
 
     new_pb=start_file+init_file+end_file
-    output_path=domain_path+file2
+    output_path=plan_path
     with open(output_path, "w") as pb_file:
         for line in new_pb:
             pb_file.write(line)
+    print("written")
 
 

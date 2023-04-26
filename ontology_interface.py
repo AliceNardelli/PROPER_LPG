@@ -12,16 +12,22 @@ class State_Init(smach.State):
    def __init__(self):
       smach.State.__init__(self, 
                            outcomes=['outcome1'],
-                           input_keys=['domain_path','problem_path'],
+                           input_keys=['domain_path','init_pb','problem_path'],
                            )
 
    def execute(self, userdata):
-      rospy.loginfo('Executing state INIT')
-      print(userdata.domain_path)
-      print("read domain and pop onto")
-      print("init functions and predicates")
-      print("read the problem")
-      return 'outcome1'
+        rospy.loginfo('Executing state INIT')
+        rospy.loginfo('copy pb in the correct file')
+        with open(userdata.init_pb,'r') as firstfile, open(userdata.problem_path,'w') as secondfile:
+            for line in firstfile:
+                secondfile.write(line)
+        rospy.loginfo('Reading domain and populate ontology')
+        populate_ontology(userdata.domain_path)
+        rospy.loginfo('Initialize function and predicates in the ontology')
+        initialize_functions_predicates()
+        rospy.loginfo('Read the problem and set the initial values of predicates  and functions')
+        read_the_problem(userdata.problem_path)      
+        return 'outcome1'
       
 
 
@@ -34,7 +40,7 @@ class Planning(smach.State):
         
     def execute(self, userdata):
         rospy.loginfo('planning')
-        print(userdata.command)    
+        planning(userdata.command,userdata.planning_folder)   
         return 'outcome2'
         
 
@@ -42,62 +48,59 @@ class GetActions(smach.State):
     def __init__(self):
         smach.State.__init__(self, 
                              outcomes=['outcome3'],
-                             input_keys=['plan_path','executing_actions_in'],
+                             input_keys=['plan_path'],
                              output_keys=['executing_actions_out'])
                              
         
     def execute(self, userdata):
         rospy.loginfo('Reading Actions to execute')
         print(userdata.plan_path)   
-        userdata.executing_actions_out=["a","b","c","d","e"]
+        userdata.executing_actions_out=read_plan(userdata.plan_path)
         return 'outcome3'
     
 class ExecAction(smach.State):
     def __init__(self):
         smach.State.__init__(self, 
-                             outcomes=['outcome4','outcome5','outcome6'],
+                             outcomes=['outcome4','outcome5'],
                              input_keys=['executing_actions'],
-                             output_keys=['updated_actions','action'])
-        
+                             output_keys=['updated_actions','action']) 
     def execute(self, userdata):
         rospy.loginfo('Executing actions')
-        ac=userdata.executing_actions.pop(0)
-        print(ac)
-        userdata.action=ac
         num =random.randint(0, 9)
-        print(num)
-        if num >5:
-            print("failed actions")
+        if num >13:
+            rospy.loginfo('Action Failed')
             return "outcome4"
         else:
-             print("actions executed")
-             if userdata.executing_actions==[]:
-                 print("finished")
-                 return "outcome6"
-             else:
-                 userdata.updated_actions=userdata.executing_actions
-                 return "outcome5"
+            ac=userdata.executing_actions.pop(0)
+            rospy.loginfo('Action executed: '+ac)
+            userdata.action=ac
+            userdata.updated_actions=userdata.executing_actions
+            return 'outcome5'
         
 class WriteProblem(smach.State):
     def __init__(self):
         smach.State.__init__(self, 
                              outcomes=['outcome7'],
-                             input_keys=['plan_path'],)
+                             input_keys=['pb_path'],)
         
     def execute(self, userdata):
         rospy.loginfo('Writing a new plan')
-        print(userdata.plan_path)
+        update_problem(userdata.pb_path)
         return 'outcome7'
     
 class UpdateOntology(smach.State):
     def __init__(self):
         smach.State.__init__(self, 
-                             outcomes=['outcome7'],
-                             input_keys=['action'],)
+                             outcomes=['outcome6','outcome7'],
+                             input_keys=['action','executing_actions'],)
         
     def execute(self, userdata):
         rospy.loginfo('Update_ontology')
         print(userdata.action)
+        update_ontology(userdata.action)
+        if userdata.executing_actions==[]:
+                rospy.loginfo('All action executed')
+                return "outcome6"
         return 'outcome7'
 
 class Finish(smach.State):
@@ -108,6 +111,7 @@ class Finish(smach.State):
         
     def execute(self,userdata):
         rospy.loginfo('Finishhh')
+        saving()
         return 'outcome7'
 
 
@@ -116,12 +120,13 @@ def main():
 
     # Create a SMACH state machine
     sm = smach.StateMachine(outcomes=['outcome8'])
-    sm.userdata.path_domain= '/home/alice/PROPER_LPG/prova_domain.pddl'
-    sm.userdata.path_problem= '/home/alice/PROPER_LPG/prova_problem.pddl'
-    sm.userdata.command_start= '/home/alice/PROPER_LPG/prova_problem.pddl'
-    sm.userdata.folder = '/home/alice/PROPER_LPG/'
-    sm.userdata.path_plan = '/home/alice/PROPER_LPG/plan_prova_problem.pddl_1.SOL'
-    sm.userdata.actions =["b"]
+    sm.userdata.path_domain='/home/alice/PROPER_LPG/prova_domain.pddl'
+    sm.userdata.path_problem='/home/alice/PROPER_LPG/prova_problem.pddl'
+    sm.userdata.path_init_problem='/home/alice/PROPER_LPG/init_problem.pddl'
+    sm.userdata.command_start='./lpg++ -o prova_domain.pddl -f prova_problem.pddl -n 1 -force_neighbour_insertion -inst_with_contraddicting_objects'
+    sm.userdata.folder ='/home/alice/PROPER_LPG/'
+    sm.userdata.path_plan ='/home/alice/PROPER_LPG/plan_prova_problem.pddl_1.SOL'
+    sm.userdata.actions =[]
     sm.userdata.a="a"
     # Open the container
     with sm:
@@ -129,7 +134,8 @@ def main():
       smach.StateMachine.add('INIT', State_Init(), 
                               transitions={'outcome1':'PLAN'},
                               remapping={'domain_path':'path_domain', 
-                                         'problem_path':'path_problem'
+                                         'problem_path':'path_problem',
+                                         'init_pb':'path_init_problem'
                                         })
       smach.StateMachine.add('PLAN', Planning(), 
                               transitions={'outcome2':'GET_ACTIONS'},
@@ -145,20 +151,22 @@ def main():
       smach.StateMachine.add('EXEC', ExecAction(), 
                         transitions={'outcome4':'WRITE_PLAN',
                                      'outcome5':'UPDATE_ONTOLOGY',
-                                     'outcome6': 'FINISH'},
+                                     },
                         remapping={'executing_actions':'actions',
                                    'updated_actions':'actions',
-                                   "action":"a" 
+                                   'action':"a" 
                                  })
       
       smach.StateMachine.add('WRITE_PLAN', WriteProblem(), 
                   transitions={'outcome7':'PLAN'},
-                  remapping={'plan_path':'path_plan'
+                  remapping={'pb_path':'path_problem'
                                        })
       
       smach.StateMachine.add('UPDATE_ONTOLOGY', UpdateOntology(), 
-                  transitions={'outcome7':'EXEC'},
+                  transitions={'outcome7':'EXEC',
+                               'outcome6': 'FINISH'},
                   remapping={'action':'a',
+                             'executing_actions':'actions'
                            })
       
       smach.StateMachine.add('FINISH', Finish(), 
