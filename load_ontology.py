@@ -86,7 +86,6 @@ with onto:
         range = [int]    
 
 #define global variables
-domain_path = "/home/alice/PROPER_LPG/"
 actions=[]
 actions_objects={}
 type=[]
@@ -100,10 +99,9 @@ objects_objects={}
 new_params=[]
 objects=[]
 
-def populate_ontology():     
-    if os.path.isfile(domain_path+'/prova_domain.pddl'):
-        output_path=domain_path+'/prova_domain.pddl'
-        with open(output_path, "r") as domain_file:
+def populate_ontology(domain):     
+    if os.path.isfile(domain):
+        with open(domain, "r") as domain_file:
             raw_domain = domain_file.readlines()
     #ACTIONS
     last_action=""
@@ -246,10 +244,9 @@ def initialize_functions_predicates():
     for f in functions:
         function_objects[f].has_value=0
 
-def read_the_problem():
-    if os.path.isfile(domain_path+'/prova_problem.pddl'):
-        output_path=domain_path+'/prova_problem.pddl'
-        with open(output_path, "r") as problem_file:
+def read_the_problem(problem_path):
+    if os.path.isfile(problem_path):
+        with open(problem_path, "r") as problem_file:
             raw_problem = problem_file.readlines()
     associated_types=[]
     t=False
@@ -299,9 +296,8 @@ def read_the_problem():
 def saving():
     onto.save()
 
-def planning(command):
+def planning(command,domain_path):
     #plan the first time and get the list of action
-    domain_path = "/home/alice/PROPER_LPG/"
     os.chdir (domain_path)
     #run the planner
     fd_process = subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
