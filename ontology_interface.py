@@ -40,8 +40,13 @@ class Planning(smach.State):
         
     def execute(self, userdata):
         rospy.loginfo('planning')
-        planning(userdata.command,userdata.planning_folder)   
+        return_code=planning(userdata.command,userdata.planning_folder)  
+        print(return_code)
+        while return_code!=0:
+            return_code=planning(userdata.command,userdata.planning_folder)  
+            print(return_code)
         return 'outcome2'
+        
         
 
 class GetActions(smach.State):
@@ -67,7 +72,7 @@ class ExecAction(smach.State):
     def execute(self, userdata):
         rospy.loginfo('Executing actions')
         num =random.randint(0, 9)
-        if num >13:
+        if num >7:
             rospy.loginfo('Action Failed')
             return "outcome4"
         else:
@@ -111,7 +116,6 @@ class Finish(smach.State):
         
     def execute(self,userdata):
         rospy.loginfo('Finishhh')
-        saving()
         return 'outcome7'
 
 
@@ -120,10 +124,10 @@ def main():
 
     # Create a SMACH state machine
     sm = smach.StateMachine(outcomes=['outcome8'])
-    sm.userdata.path_domain='/home/alice/PROPER_LPG/prova_domain.pddl'
+    sm.userdata.path_domain='/home/alice/PROPER_LPG/new_domain.pddl'
     sm.userdata.path_problem='/home/alice/PROPER_LPG/prova_problem.pddl'
     sm.userdata.path_init_problem='/home/alice/PROPER_LPG/init_problem.pddl'
-    sm.userdata.command_start='./lpg++ -o prova_domain.pddl -f prova_problem.pddl -n 1 -force_neighbour_insertion -inst_with_contraddicting_objects'
+    sm.userdata.command_start='./lpg++ -o new_domain.pddl -f prova_problem.pddl -n 1 -force_neighbour_insertion -inst_with_contraddicting_objects'
     sm.userdata.folder ='/home/alice/PROPER_LPG/'
     sm.userdata.path_plan ='/home/alice/PROPER_LPG/plan_prova_problem.pddl_1.SOL'
     sm.userdata.actions =[]

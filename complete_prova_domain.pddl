@@ -42,7 +42,331 @@
         (computed_a)
 )
 
+(:action CHECK_EXTROVERSION
+        :precondition
+                (and
+                  (>=(desired_interaction)(baseline)) 
+                )
 
+        :effect
+                (and   
+                     (extro)
+                )
+)
+
+(:action CHECK_INTROVERSION
+        :precondition
+                (and
+                  (<(desired_interaction)(baseline)) 
+                )
+
+        :effect
+                (and   
+                     (intro)
+                )
+)
+
+(:action CHECK_CONSCIENTOUS
+        :precondition
+                (and
+                  (>=(desired_scrupulousness)(baseline)) 
+                )
+
+        :effect
+                (and   
+                     (consc)
+                )
+)
+
+(:action CHECK_UNSCROPOLOUS
+        :precondition
+                (and
+                  (<=(desired_scrupulousness)(baseline)) 
+                )
+
+        :effect
+                (and   
+                     (unsc)
+                )
+)
+
+(:action CHECK_AGREEABLE
+        :precondition
+                (and
+                  (>=(desired_agreeableness)(baseline)) 
+                )
+
+        :effect
+                (and   
+                     (agree)
+                )
+)
+
+(:action CHECK_DISAGREEABLE
+        :precondition
+                (and
+                  (<=(desired_agreeableness)(baseline)) 
+                )
+
+        :effect
+                (and   
+                    (disagree)
+                )
+)
+
+;extro
+
+(:durative-action CHIT_CHAT
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<(interaction_level)(desired_interaction)))
+                   (at start (extro))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
+)
+
+(:durative-action APPROACH_HUMAN
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<(interaction_level)(desired_interaction)))
+                   (at start (extro))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
+)
+
+(:durative-action EXPRESS_ENTHUSIASM
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<(interaction_level)(desired_interaction)))
+                   (at start (extro))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (interaction_level)5))
+                )
+)
+
+; intro 
+
+(:durative-action GO_NOT_CROWDED_AREA
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>(interaction_level)(desired_interaction)))
+                   (at start (intro))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (interaction_level) 5))
+                )
+)
+
+(:durative-action TURN_ON_BACK
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>(interaction_level)(desired_interaction)))
+                   (at start (intro))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (interaction_level) 5))
+                )
+)
+
+; consc
+
+(:durative-action CHECK_HUMAN_WORK
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<(scrupulousness_level)(desired_scrupulousness)))
+                   (at start (consc))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (scrupulousness_level)5))
+                )
+)
+
+(:durative-action REMIND_TO_PAY_ATTENTION
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<(scrupulousness_level)(desired_scrupulousness)))
+                   (at start (consc))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (scrupulousness_level)5))
+                )
+)
+
+; unsc
+
+(:durative-action WAIT
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>(scrupulousness_level)(desired_scrupulousness)))
+                   (at start (unsc))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (scrupulousness_level) 5))
+                )
+)
+
+(:durative-action RANDOM_ACTION
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>(scrupulousness_level)(desired_scrupulousness)))
+                   (at start (unsc))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (scrupulousness_level) 5))
+                )
+)
+
+(:durative-action SAY_NO_MATTER_ABOUT_THE_TASK
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>(scrupulousness_level)(desired_scrupulousness)))
+                   (at start (unsc))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (scrupulousness_level) 5))
+                )
+)
+
+; agree
+
+(:durative-action SHOW_EMPATHY
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<(agreeableness_level)(desired_agreeableness)))
+                   (at start (agree))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level)5))
+                )
+)
+
+(:durative-action PLEASURE_HUMANS
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<(agreeableness_level)(desired_agreeableness)))
+                   (at start (agree))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level)5))
+                )
+)
+
+(:durative-action ASK_IF_NEED_HELP
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (<(agreeableness_level)(desired_agreeableness)))
+                   (at start (agree))
+                )
+
+        :effect
+                (and    
+                     (at end (increase (agreeableness_level)5))
+                )
+)
+
+; disagree
+
+(:durative-action SAY_ROBOT_WORK_BETTER
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>(agreeableness_level)(desired_agreeableness)))
+                   (at start (disagree))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (agreeableness_level) 5))
+                )
+)
+
+(:durative-action TRY_REPLACE_THE_HUMAN
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>(agreeableness_level)(desired_agreeableness)))
+                   (at start (disagree))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (agreeableness_level) 5))
+                )
+)
+
+(:durative-action BE_ARROGANT
+        :duration
+                (= ?duration 5)
+        :condition
+                (and
+                   (at start (>(agreeableness_level)(desired_agreeableness)))
+                   (at start (disagree))
+                )
+
+        :effect
+                (and    
+                     (at end (decrease (agreeableness_level) 5))
+                )
+)
+
+; standard
 
 (:durative-action REACHING_PRODUCTION_ROOM
         :parameters
@@ -56,7 +380,7 @@
                         (at start (production_room ?l2))
                         (at start (or (and (<=(interaction_level)(desired_interaction)) (intro))(and (>=(interaction_level)(desired_interaction)) (extro))))
                         (at start (or (and (<=(scrupulousness_level)(desired_scrupulousness)) (unsc))(and (>=(scrupulousness_level)(desired_scrupulousness)) (consc))))
-                        (at start (or (and (<=(agreeableness_level)(desired_agreeableness))(disagree))(and (>=(agreeableness_level)(desired_agreeableness)) (agree))))
+                        (at start (or (and (<=(agreeableness_level)(desired_agreeableness)) (disagree))(and (>=(agreeableness_level)(desired_agreeableness)) (agree))))
                         (at start (computed_e))
                         (at start (computed_c))
                         (at start (computed_a))
@@ -311,50 +635,5 @@
     	    (finished)
     )
 )
-
-(:durative-action BE_KIND
-        :duration
-                (= ?duration 5)
-        :condition
-                (and
-                   (at start (<(agreeableness_level)(desired_agreeableness)))
-                   (at start (agree))
-                )
-
-        :effect
-                (and    
-                     (at end (increase (agreeableness_level) 5))
-                )
 )
-
-(:durative-action BE_HELPFUL
-        :duration
-                (= ?duration 5)
-        :condition
-                (and
-                   (at start (<(agreeableness_level)(desired_agreeableness)))
-                   (at start (agree))
-                )
-
-        :effect
-                (and    
-                     (at end (increase (agreeableness_level) 5))
-                )
-)
-
-(:durative-action BE_ARR
-        :duration
-                (= ?duration 5)
-        :condition
-                (and
-                   (at start (>(agreeableness_level)(desired_agreeableness)))
-                   (at start (disagree))
-                )
-
-        :effect
-                (and    
-                     (at end (decrease (agreeableness_level) 5))
-                )
-)
-
-)
+Footer
